@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>匯率換萬</title>
+</head>
+<body>
+	<div id="app">
+		<select v-model="from.selected" v-on:change="changeFromSelected">
+			<option v-for="e in exchangeRate">{{e.name}}</option>
+		</select>
+		<input type="text" v-model='from.amount'></input>
+		<button v-on:click="change"><-></button>
+		<select v-model="to.selected" v-on:change="changeToSelected">
+			<option v-for="e in exchangeRate">{{e.name}}</option>
+		</select>
+		{{ from.amount*from.currency/to.currency }}
+		<!-- <input type="text" v-model='to.amount'></input> -->
+	</div>
+
+<script src="https://unpkg.com/vue"></script>
+<script>
+	const se = document.querySelector('#se');
+	var app = new Vue({
+		el: '#app',
+		data:{
+			from: {
+				amount: '',
+				selected: '台幣',
+				currency: 1
+			},
+			to: {
+				selected: '日幣',
+				currency: 0.2783
+			},
+			exchangeRate:[
+				{
+					name: '台幣',
+					currency: 1
+				},
+				{
+					name: '日幣',
+					currency: 0.2783
+				},
+				{
+					name: '美金',
+					currency: 30.232
+				},
+				{
+					name: '韓元',
+					currency: 0.02876
+				},
+				{
+					name: '歐元',
+					currency: 21.89	
+				},
+				{
+					name: '人民幣',
+					currency: 4.683
+				}
+			]
+		},
+		methods:{
+			changeFromSelected: function(){
+				this.exchangeRate.forEach(e=>{
+					if(e.name == this.from.selected){
+						this.from.currency = e.currency;
+					}
+				})
+			},
+			changeToSelected: function(){
+				this.exchangeRate.forEach(e=>{
+					if(e.name == this.to.selected){
+						this.to.currency = e.currency;
+					}
+				})
+			},
+			change: function(){
+				let tmp = this.from.selected;
+				this.from.selected = this.to.selected;
+				this.to.selected = tmp;
+				this.changeFromSelected();
+				this.changeToSelected();
+
+			}
+		}
+	});
+</script>
+</body>
+</html>
