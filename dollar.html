@@ -2,19 +2,19 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>匯率換萬</title>
+	<title>匯率換算</title>
 </head>
 <body>
 	<div id="app">
-		<select v-model="from.selected" v-on:change="changeFromSelected">
+		<select v-model="fromSelected">
 			<option v-for="e in exchangeRate">{{e.name}}</option>
 		</select>
-		<input type="text" v-model='from.amount'></input>
+		<input type="text" v-model='fromAmount'></input>
 		<button v-on:click="change"><-></button>
-		<select v-model="to.selected" v-on:change="changeToSelected">
+		<select v-model="toSelected">
 			<option v-for="e in exchangeRate">{{e.name}}</option>
 		</select>
-		{{ from.amount*from.currency/to.currency }}
+		{{ output }}
 		<!-- <input type="text" v-model='to.amount'></input> -->
 	</div>
 
@@ -24,15 +24,9 @@
 	var app = new Vue({
 		el: '#app',
 		data:{
-			from: {
-				amount: '',
-				selected: '台幣',
-				currency: 1
-			},
-			to: {
-				selected: '日幣',
-				currency: 0.2783
-			},
+			fromAmount: 0,
+			fromSelected: '台幣',
+			toSelected: '日幣',
 			exchangeRate:[
 				{
 					name: '台幣',
@@ -60,21 +54,46 @@
 				}
 			]
 		},
+		computed:{
+			output: function(){
+				return this.fromAmount*this.fromCurrency/this.toCurrency
+			},
+			fromCurrency: function(){
+				let country = this.fromSelected;
+				let currency;
+				this.exchangeRate.forEach(e=>{
+					if(e.name == country){
+						currency = e.currency;
+					}
+				})
+				return currency;
+			},
+			toCurrency: function(){
+				let country = this.toSelected;
+				let currency;
+				this.exchangeRate.forEach(e=>{
+					if(e.name == country){
+						currency = e.currency;
+					}
+				})
+				return currency;
+			}
+		},
 		methods:{
-			changeFromSelected: function(){
-				this.exchangeRate.forEach(e=>{
-					if(e.name == this.from.selected){
-						this.from.currency = e.currency;
-					}
-				})
-			},
-			changeToSelected: function(){
-				this.exchangeRate.forEach(e=>{
-					if(e.name == this.to.selected){
-						this.to.currency = e.currency;
-					}
-				})
-			},
+			// changeFromSelected: function(){
+			// 	this.exchangeRate.forEach(e=>{
+			// 		if(e.name == this.from.selected){
+			// 			this.from.currency = e.currency;
+			// 		}
+			// 	})
+			// },
+			// changeToSelected: function(){
+			// 	this.exchangeRate.forEach(e=>{
+			// 		if(e.name == this.to.selected){
+			// 			this.to.currency = e.currency;
+			// 		}
+			// 	})
+			// },
 			change: function(){
 				let tmp = this.from.selected;
 				this.from.selected = this.to.selected;
