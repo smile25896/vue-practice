@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>待辦事項</title>
+</head>
+<style type="text/css">
+li.delete{
+  text-decoration: line-through;
+}
+</style>
+<body>
+	<div id="todo">
+		待辦事項：<input type="text" v-model="inputText" v-on:keyup.enter="addTodo(inputText)"></input>
+		<p>
+			<button v-on:click.prevent="show('all')">全部</button>
+			<button v-on:click.prevent="show('finished')">已完成</button>
+			<button v-on:click.prevent="show('unfinished')">未完成</button>
+		</p>
+		<ul>
+			<li v-if="todo.isShow" v-for="todo in todoList" v-bind:class="{delete:todo.isCompleted}">
+				<input type="checkbox" v-model="todo.isCompleted"></input>{{todo.name}}
+				<button v-on:click.prevent="removeTodo(todo)">刪除</button>
+			</li>
+		</ul>
+	</div>
+
+	<script src="https://unpkg.com/vue"></script>
+	<script>
+		var todo = new Vue({
+			el: '#todo',
+			data:{
+				todoList:[],
+				inputText: ""
+			},
+			methods:{
+				addTodo: function(todoName){
+					if(todoName=="") return;
+					this.todoList.push({
+						name: todoName,
+						isCompleted: false,
+						isShow: true
+					})
+					this.inputText = "";
+				},
+				removeTodo: function(todo){
+					this.todoList.splice(this.todoList.indexOf(todo), 1);
+				},
+				show: function(opt){
+					switch(opt){
+						case "all":
+							this.todoList.forEach((todo => {
+								todo.isShow = true;
+							}))
+							break;
+						case "finished":
+							this.todoList.forEach((todo => {
+								if(todo.isCompleted){
+									todo.isShow = true;
+								}
+								else{
+									todo.isShow = false;
+								}
+							}))
+							break;
+						case "unfinished":
+							this.todoList.forEach((todo => {
+								if(!todo.isCompleted){
+									todo.isShow = true;
+								}
+								else{
+									todo.isShow = false;
+								}
+							}))
+							break;
+					}
+				}
+			}
+		})
+	</script>
+</body>
+</html>

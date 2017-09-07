@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Vue</title>
+</head>
+<body>
+
+<div id="app">
+	message:{{message}}
+	<!-- 完全不見 連dom都沒有 -->
+	<div v-if="vif">if版本：連dom都沒有</div>
+	<div v-else>我是else</div>
+
+	<!-- dom還在，只是display:none -->
+	<div v-show="vshow">show版本：dom還有</div>
+
+	<div v-once>message:{{message}}
+	裡面的值不會更改了</div>
+
+	<!-- for迴圈 -->
+	<ol>
+		<li v-for="student in students">
+			{{student.name}}
+		</li>
+	</ol>
+
+	<!-- onclick事件 -->
+	<button v-on:click="toggleIf">切換if</button>
+
+	<!-- model -->
+	<input v-model="message"></input>
+</div>
+
+<script src="https://unpkg.com/vue"></script>
+<script>
+var data = {
+	message:  "hello world",
+	vif: false,
+	vshow: false,
+	students: [
+		{name: "John", id: 1},
+		{name: "Cathy", id: 9}
+	]
+}
+
+var app = new Vue({
+	el: '#app',		//綁的對象
+	data: data,
+	methods: {
+		toggleIf: function(){
+			console.log("aaa")
+			if(this.vif){
+				this.vif = false;
+			}
+			else{
+				this.vif = true;
+			}
+		}
+	}
+})
+
+console.log(app.message == data.message) 
+// true
+// app.message改變，data.message也會改變
+// data裡的資料是響應式的
+console.log(app.$data == data)
+// true
+// 如果不是要指定data裡的內容，還是vue裡面的
+// 要加上$符號
+
+</script>
+</body>
+</html>
